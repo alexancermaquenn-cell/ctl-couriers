@@ -1,0 +1,152 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model SiteContent {
+  id        Int      @id @default(autoincrement())
+  key       String   @unique
+  value     Json
+  updatedAt DateTime @updatedAt
+}
+
+enum ShipmentStatus {
+  PENDING
+  PICKED_UP
+  IN_TRANSIT
+  CUSTOMS
+  OUT_FOR_DELIVERY
+  DELIVERED
+  EXCEPTION
+}
+
+model Shipment {
+  id                String          @id @default(cuid())
+  trackingNumber    String          @unique
+  status            ShipmentStatus  @default(PENDING)
+  origin            String
+  destination       String
+  senderName        String
+  senderAddress     String?
+  receiverName      String
+  receiverAddress   String?
+  weightKg          Float?
+  service           String?
+  estimatedDelivery DateTime?
+  createdAt         DateTime        @default(now())
+  updatedAt         DateTime        @updatedAt
+  events            TrackingEvent[]
+  documents         Document[]
+  client            Client?         @relation(fields: [clientId], references: [id], onDelete: SetNull)
+  clientId          String?
+}
+
+model TrackingEvent {
+  id         String         @id @default(cuid())
+  shipment   Shipment       @relation(fields: [shipmentId], references: [id], onDelete: Cascade)
+  shipmentId String
+  status     ShipmentStatus
+  location   String
+  note       String?
+  occurredAt DateTime       @default(now())
+}
+
+enum DocumentType {
+  BILL_OF_LADING
+  INVOICE
+  INSPECTION
+}
+
+model Document {
+  id              String       @id @default(cuid())
+  type            DocumentType
+  number          String       @unique
+  design          String       @default("A")
+  currency        String       @default("EUR")
+  client          Client?      @relation(fields: [clientId], references: [id], onDelete: SetNull)
+  clientId        String?
+  shipment        Shipment?    @relation(fields: [shipmentId], references: [id], onDelete: SetNull)
+  shipmentId      String?
+  stampAsset      DocAsset?    @relation("DocStamp", fields: [stampAssetId], references: [id], onDelete: SetNull)
+  stampAssetId    String?
+  signatureAsset  DocAsset?    @relation("DocSignature", fields: [signatureAssetId], references: [id], onDelete: SetNull)
+  signatureAssetId String?
+  dataJson        Json
+  createdAt       DateTime     @default(now())
+}
+
+model EmailTemplate {
+  id        String   @id @default(cuid())
+  name      String   @unique
+  subject   String
+  bodyHtml  String
+  updatedAt DateTime @updatedAt
+}
+
+model EmailLog {
+  id         String   @id @default(cuid())
+  to         String
+  subject    String
+  bodyHtml   String
+  status     String   @default("sent")
+  providerId String?
+  error      String?
+  sentAt     DateTime @default(now())
+}
+
+model AdminUser {
+  id           String   @id @default(cuid())
+  username     String   @unique
+  passwordHash String
+  createdAt    DateTime @default(now())
+}
+
+model Visitor {
+  id        Int      @id @default(autoincrement())
+  ip        String?
+  country   String?
+  path      String?
+  createdAt DateTime @default(now())
+}
+
+model Client {
+  id           String     @id @default(cuid())
+  fullName     String
+  email        String
+  company      String?
+  vatNumber    String?
+  phone        String?
+  address      String?
+  country      String?
+  paymentTerms String?
+  createdAt    DateTime   @default(now())
+  updatedAt    DateTime   @updatedAt
+  documents    Document[]
+  shipments    Shipment[]
+}
+
+model Setting {
+  key       String   @id
+  value     String   @db.Text
+  updatedAt DateTime @updatedAt
+}
+
+
+enum DocAssetKind {
+  STAMP
+  SIGNATURE
+}
+
+model DocAsset {
+  id             String       @id @default(cuid())
+  name           String
+  kind           DocAssetKind
+  dataUrl        String       @db.Text
+  createdAt      DateTime     @default(now())
+  stampDocs      Document[]   @relation("DocStamp")
+  signatureDocs  Document[]   @relation("DocSignature")
+}

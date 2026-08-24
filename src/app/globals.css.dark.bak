@@ -1,0 +1,62 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  /* Dark premium + CTL red */
+  --bg: 8 8 10;            /* #08080a near-black */
+  --bg-elev: 18 18 22;     /* elevated surfaces */
+  --bg-card: 22 22 27;
+  --border: 38 38 44;
+  --border-glow: 220 38 38;
+  --fg: 244 244 246;       /* near-white */
+  --fg-muted: 161 161 170; /* zinc-400 */
+  --fg-subtle: 113 113 122;
+  --accent: 220 38 38;     /* red-600 CTL */
+  --accent-bright: 239 68 68;
+  --accent-glow: 248 113 113;
+  --success: 34 197 94;
+  --warning: 234 179 8;
+  --radius: 14px;
+}
+
+* { border-color: rgb(var(--border)); }
+
+html { scroll-behavior: smooth; }
+
+body {
+  background:
+    radial-gradient(1200px 600px at 50% -10%, rgba(220,38,38,0.10), transparent 60%),
+    rgb(var(--bg));
+  color: rgb(var(--fg));
+  font-feature-settings: "cv11", "ss01";
+  -webkit-font-smoothing: antialiased;
+}
+
+@layer utilities {
+  .text-accent { color: rgb(var(--accent-bright)); }
+  .bg-accent { background-color: rgb(var(--accent)); }
+  .glass {
+    background: rgba(22,22,27,0.55);
+    backdrop-filter: blur(16px) saturate(1.2);
+    border: 1px solid rgba(255,255,255,0.06);
+  }
+  .glow-red { box-shadow: 0 0 0 1px rgba(220,38,38,0.25), 0 8px 40px -8px rgba(220,38,38,0.35); }
+  .card {
+    background: rgb(var(--bg-card));
+    border: 1px solid rgb(var(--border));
+    border-radius: var(--radius);
+  }
+  .container-x { max-width: 1200px; margin-inline: auto; padding-inline: 1.5rem; }
+  .grain::before {
+    content: ""; position: fixed; inset: 0; pointer-events: none; z-index: 1; opacity: 0.03;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  }
+}
+
+::selection { background: rgba(220,38,38,0.35); color: #fff; }
+
+::-webkit-scrollbar { width: 10px; height: 10px; }
+::-webkit-scrollbar-track { background: rgb(var(--bg)); }
+::-webkit-scrollbar-thumb { background: rgb(var(--border)); border-radius: 6px; }
+::-webkit-scrollbar-thumb:hover { background: rgb(var(--accent)); }
