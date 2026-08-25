@@ -1370,7 +1370,7 @@ function BolOriginal({ profile, data, seal, currency }: { profile: CompanyProfil
               <View style={ob.rc}>
                 {data.referenceNumber ? <Text style={ob.rcLbl}>Reference Number:  <Text style={ob.rcMono}>{data.referenceNumber}</Text></Text> : null}
                 <View style={ob.qrWrap}>
-                  <QrCode value={`https://ctl-couriers-ltd.com/tracking?n=${shipmentId}`} size={82} />
+                  <QrCode value={`https://ctlcouriers.com/tracking?n=${shipmentId}`} size={82} />
                 </View>
               </View>
               <View style={[ob.rc, { borderBottomWidth: 0 }]}>

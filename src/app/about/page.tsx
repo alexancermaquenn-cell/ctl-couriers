@@ -325,7 +325,7 @@ export default function AboutPage() {
                 <Link className="btn btn--white" href="/services">
                   Explore our services
                 </Link>
-                <span className="cta__note">info@ctl-couriers-ltd.com · 24/7 · 365</span>
+                <span className="cta__note">info@ctlcouriers.com · 24/7 · 365</span>
               </div>
             </div>
           </div>

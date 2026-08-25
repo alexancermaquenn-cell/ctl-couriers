@@ -378,8 +378,8 @@ export default function TermsPage() {
                 <span className="mono">Last updated · 2026</span>
                 <p>
                   <b>Questions about these terms?</b> Contact our support team at{' '}
-                  <a href="mailto:info@ctl-couriers-ltd.com" style={{ color: 'var(--red)', fontWeight: 700 }}>
-                    info@ctl-couriers-ltd.com
+                  <a href="mailto:info@ctlcouriers.com" style={{ color: 'var(--red)', fontWeight: 700 }}>
+                    info@ctlcouriers.com
                   </a>
                   . CTL Couriers Ltd — available 24 hours a day, 365 days a year.
                 </p>

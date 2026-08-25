@@ -211,6 +211,6 @@ export const CTL_PROFILE: CompanyProfile = {
   vat: 'GB 237239207',
   address: '6 Doagh Road, Ballyclare, Northern Ireland, BT39 9BG',
   phone: '',
-  email: 'info@ctl-couriers-ltd.com',
+  email: 'info@ctlcouriers.com',
   logo: '/img/docs/logo.png',
 };

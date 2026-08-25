@@ -330,7 +330,7 @@ export default function SafeDealPage() {
                 <Link className="btn btn--white" href="/faq">
                   Read the FAQ
                 </Link>
-                <span className="cta__note">info@ctl-couriers-ltd.com · 24 / 7</span>
+                <span className="cta__note">info@ctlcouriers.com · 24 / 7</span>
               </div>
             </div>
           </Reveal>

@@ -128,7 +128,7 @@ export default function ContactPage() {
                   <span>
                     <span className="lbl">Email support</span>
                     <span className="val">
-                      <a href="mailto:info@ctl-couriers-ltd.com">info@ctl-couriers-ltd.com</a>
+                      <a href="mailto:info@ctlcouriers.com">info@ctlcouriers.com</a>
                     </span>
                     <span className="sub">The fastest way to reach our customer-care team.</span>
                   </span>
