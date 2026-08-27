@@ -1,5 +1,6 @@
 import { PrismaClient, ShipmentStatus } from '@prisma/client';
 import bcrypt from 'bcryptjs';
+import { TEMPLATE_SEEDS } from '../src/lib/email-templates';
 
 const prisma = new PrismaClient();
 
@@ -142,17 +143,15 @@ async function main() {
     });
   }
 
-  // Email templates
-  await prisma.emailTemplate.upsert({
-    where: { name: 'Shipment Update' },
-    update: {},
-    create: {
-      name: 'Shipment Update',
-      subject: 'Update on your shipment {{trackingNumber}}',
-      bodyHtml:
-        '<p>Hello,</p><p>Your shipment <strong>{{trackingNumber}}</strong> is now <strong>{{status}}</strong> at {{location}}.</p><p>Track it live: {{trackingUrl}}</p><p>— Cargo Transportation Logistics</p>',
-    },
-  });
+  // Email templates — all transactional templates from the shared lib.
+  // Idempotent: upsert by unique name, refreshing subject/body on each run.
+  for (const t of TEMPLATE_SEEDS) {
+    await prisma.emailTemplate.upsert({
+      where: { name: t.name },
+      update: { subject: t.subject, bodyHtml: t.bodyHtml },
+      create: { name: t.name, subject: t.subject, bodyHtml: t.bodyHtml },
+    });
+  }
 
   // Shipments + events
   for (const s of DEMO_SHIPMENTS) {

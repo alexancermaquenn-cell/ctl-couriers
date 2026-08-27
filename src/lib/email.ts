@@ -3,16 +3,23 @@ import type { EmailLog } from '@prisma/client';
 
 const FROM = 'CTL Couriers <info@ctlcouriers.com>';
 
+interface EmailAttachment {
+  filename: string;
+  content: Buffer;
+}
+
 interface SendEmailArgs {
   to: string;
   subject: string;
   html: string;
+  attachments?: EmailAttachment[];
 }
 
-export async function sendEmail({ to, subject, html }: SendEmailArgs): Promise<EmailLog> {
+export async function sendEmail({ to, subject, html, attachments }: SendEmailArgs): Promise<EmailLog> {
   const apiKey = process.env.RESEND_API_KEY;
 
   if (!apiKey) {
+    // No key locally: log the email (attachments are ignored when logging).
     return prisma.emailLog.create({
       data: { to, subject, bodyHtml: html, status: 'logged' },
     });
@@ -26,6 +33,9 @@ export async function sendEmail({ to, subject, html }: SendEmailArgs): Promise<E
       to,
       subject,
       html,
+      ...(attachments && attachments.length > 0
+        ? { attachments: attachments.map((a) => ({ filename: a.filename, content: a.content })) }
+        : {}),
     });
     if (error) {
       return prisma.emailLog.create({
