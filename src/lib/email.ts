@@ -1,7 +1,7 @@
 import { prisma } from '@/lib/prisma';
 import type { EmailLog } from '@prisma/client';
 
-const FROM = 'CTL <onboarding@resend.dev>';
+const FROM = 'CTL Couriers <info@ctlcouriers.com>';
 
 interface SendEmailArgs {
   to: string;

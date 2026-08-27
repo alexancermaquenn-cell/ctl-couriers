@@ -643,6 +643,8 @@ footer{padding:clamp(54px,7vw,88px) 0 40px;position:relative;z-index:1}
 .fld--row{display:grid;grid-template-columns:1fr 1fr;gap:16px}
 .form-card .btn--red{width:100%;justify-content:center;padding:15px;margin-top:22px}
 .form-note{font-size:12px;color:var(--muted);margin-top:14px;text-align:center}
+.form-err{margin-top:14px;padding:12px 14px;border-radius:10px;background:rgba(220,38,38,.08);border:1px solid rgba(220,38,38,.28);color:var(--red);font-size:13.5px}
+.hp-field{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0}
 .form-ok{text-align:center;padding:clamp(30px,4vw,50px) 10px}
 .form-ok .chk{width:64px;height:64px;margin:0 auto 20px;border-radius:50%;background:var(--blue-soft);display:grid;place-items:center}
 .form-ok .chk svg{width:32px;height:32px;stroke:var(--blue)}

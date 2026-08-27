@@ -168,7 +168,7 @@ export default function Home() {
               </div>
               <div className="flag__body">
                 <p>
-                  Insured, secured and bonded facilities in Norway, Denmark and Italy — with certified mechanics
+                  Insured, secured and bonded facilities in Norway, Denmark and Spain — with certified mechanics
                   inspecting every vehicle before and after transport, documented in a full Vehicle Inspection Report.
                 </p>
                 <div className="flag__meta">
@@ -211,7 +211,7 @@ export default function Home() {
               <span className="eyebrow">Global network</span>
               <h2 className="serif" style={{ marginTop: 16 }}>Warehouses across Europe.<br />Terminals across the world.</h2>
             </div>
-            <p className="index">/ HUBS — NORWAY · DENMARK · ITALY</p>
+            <p className="index">/ HUBS — NORWAY · DENMARK · SPAIN</p>
           </Reveal>
 
           <Reveal>
@@ -240,10 +240,10 @@ export default function Home() {
             </div>
             <div className="hub">
               <div className="hub__flag">
-                <svg viewBox="0 0 22 16"><rect width="22" height="16" fill="#fff"/><rect width="7.3" height="16" fill="#008c45"/><rect x="14.7" width="7.3" height="16" fill="#cd212a"/></svg>
+                <svg viewBox="0 0 22 16"><rect width="22" height="16" fill="#AA151B"/><rect y="4" width="22" height="8" fill="#F1BF00"/></svg>
               </div>
-              <span className="hub__k">Warehouse · Southern reach</span>
-              <h3>Milan, Italy</h3>
+              <span className="hub__k">Warehouse · Iberian reach</span>
+              <h3>Madrid, Spain</h3>
               <div className="hub__meta">
                 <div><small>Facility</small><b>Insured · Bonded</b></div>
                 <div><small>Lanes</small><b>Road · Air</b></div>

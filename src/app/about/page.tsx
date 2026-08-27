@@ -95,7 +95,7 @@ export default function AboutPage() {
               </h2>
             </div>
             <p>
-              Insured, secured and bonded warehouse facilities in Norway, Denmark and Italy — backed by vehicle terminals
+              Insured, secured and bonded warehouse facilities in Norway, Denmark and Spain — backed by vehicle terminals
               across three continents.
             </p>
           </div>
@@ -150,13 +150,12 @@ export default function AboutPage() {
             <div className="hub">
               <div className="hub__flag" aria-hidden="true">
                 <svg viewBox="0 0 46 32">
-                  <rect width="46" height="32" fill="#fff" />
-                  <rect width="15.33" height="32" fill="#008c45" />
-                  <rect x="30.67" width="15.33" height="32" fill="#cd212a" />
+                  <rect width="46" height="32" fill="#AA151B" />
+                  <rect y="8" width="46" height="16" fill="#F1BF00" />
                 </svg>
               </div>
-              <div className="hub__k">Italy</div>
-              <h3>Milan</h3>
+              <div className="hub__k">Spain</div>
+              <h3>Madrid</h3>
               <div className="hub__meta">
                 <div>
                   <small>Facility</small>

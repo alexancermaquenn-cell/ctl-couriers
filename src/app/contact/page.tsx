@@ -7,6 +7,42 @@ import { Reveal } from '@/components/site/Reveal';
 
 function QuoteForm() {
   const [sent, setSent] = useState(false);
+  const [submitting, setSubmitting] = useState(false);
+  const [error, setError] = useState('');
+
+  async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
+    e.preventDefault();
+    const form = e.currentTarget;
+    if (!form.checkValidity()) {
+      form.reportValidity();
+      return;
+    }
+
+    setError('');
+    setSubmitting(true);
+    try {
+      const data = new FormData(form);
+      const res = await fetch('/api/content/inquiry', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          name: data.get('name'),
+          email: data.get('email'),
+          service: data.get('service'),
+          message: data.get('message'),
+          company: data.get('company'),
+        }),
+      });
+      if (!res.ok) {
+        throw new Error('request failed');
+      }
+      setSent(true);
+    } catch {
+      setError('Something went wrong sending your request. Please try again or email us directly.');
+    } finally {
+      setSubmitting(false);
+    }
+  }
 
   if (sent) {
     return (
@@ -31,19 +67,13 @@ function QuoteForm() {
 
   return (
     <div className="form-card">
-      <form
-        noValidate
-        onSubmit={(e) => {
-          e.preventDefault();
-          if (!e.currentTarget.checkValidity()) {
-            e.currentTarget.reportValidity();
-            return;
-          }
-          setSent(true);
-        }}
-      >
+      <form noValidate onSubmit={handleSubmit}>
         <h2>Request a quote</h2>
         <p>Tell us about your shipment and we&apos;ll respond with pricing and the right service.</p>
+        <div className="hp-field" aria-hidden="true">
+          <label htmlFor="company">Company</label>
+          <input id="company" name="company" type="text" tabIndex={-1} autoComplete="off" />
+        </div>
         <div className="fld--row">
           <div className="fld">
             <label htmlFor="name">Full name</label>
@@ -78,12 +108,13 @@ function QuoteForm() {
             required
           ></textarea>
         </div>
-        <button className="btn btn--red" type="submit">
-          Send request
+        <button className="btn btn--red" type="submit" disabled={submitting}>
+          {submitting ? 'Sending…' : 'Send request'}
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2}>
             <path d="M5 12h14M13 6l6 6-6 6" />
           </svg>
         </button>
+        {error ? <p className="form-err">{error}</p> : null}
         <p className="form-note">We typically respond within one business day. Available 24 / 7 · 365 days.</p>
       </form>
     </div>
@@ -155,8 +186,8 @@ export default function ContactPage() {
                   </span>
                   <span>
                     <span className="lbl">Warehouses</span>
-                    <span className="val">Oslo · Copenhagen · Milan</span>
-                    <span className="sub">Insured, secured and bonded facilities across Norway, Denmark and Italy.</span>
+                    <span className="val">Oslo · Copenhagen · Madrid</span>
+                    <span className="sub">Insured, secured and bonded facilities across Norway, Denmark and Spain.</span>
                   </span>
                 </div>
                 <div className="ci">
@@ -202,9 +233,9 @@ export default function ContactPage() {
                 <div className="cty">Scandinavian distribution</div>
               </div>
               <div className="hub">
-                <div className="k">Hub · Italy</div>
-                <div className="city">Milan</div>
-                <div className="cty">Southern Europe &amp; Mediterranean</div>
+                <div className="k">Hub · Spain</div>
+                <div className="city">Madrid</div>
+                <div className="cty">Iberian Peninsula &amp; Southern reach</div>
               </div>
             </div>
           </div>
