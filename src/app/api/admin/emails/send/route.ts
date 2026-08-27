@@ -41,8 +41,11 @@ function toStringRecord(v: unknown): Record<string, string> {
   return out;
 }
 
-/** Build rendered { subject, html } from the smart payload. */
-async function renderSmart(body: Body): Promise<{ subject: string; html: string } | { error: string }> {
+/** Build rendered { subject, html } from the smart payload. `docVars` are merged last. */
+async function renderSmart(
+  body: Body,
+  docVars: Record<string, string> = {},
+): Promise<{ subject: string; html: string } | { error: string }> {
   const templateId = str(body.templateId);
   const template = await prisma.emailTemplate.findUnique({ where: { id: templateId } });
   if (!template) return { error: 'Template not found' };
@@ -58,8 +61,8 @@ async function renderSmart(body: Body): Promise<{ subject: string; html: string 
     vars = varsForShipment(shipment);
   }
 
-  // extraVars override anything derived from the shipment.
-  vars = { ...vars, ...toStringRecord(body.extraVars) };
+  // extraVars override shipment-derived vars; doc vars (from an attachment) win last.
+  vars = { ...vars, ...toStringRecord(body.extraVars), ...docVars };
 
   return {
     subject: renderTemplate(template.subject, vars),
@@ -78,12 +81,11 @@ export async function POST(req: Request) {
 
     // ---- Smart template path ----
     if (templateId) {
-      const rendered = await renderSmart(body);
-      if ('error' in rendered) {
-        return NextResponse.json({ error: rendered.error }, { status: 404 });
-      }
-
       if (preview) {
+        const rendered = await renderSmart(body);
+        if ('error' in rendered) {
+          return NextResponse.json({ error: rendered.error }, { status: 404 });
+        }
         return NextResponse.json(rendered, { status: 200 });
       }
 
@@ -91,16 +93,25 @@ export async function POST(req: Request) {
         return NextResponse.json({ error: 'valid recipient email required' }, { status: 400 });
       }
 
+      // Resolve the PDF first so its {{docNumber}}/{{docType}} feed into the render.
       const attachDocumentId = str(body.attachDocumentId);
-      const attachments = [];
+      const attachments: { filename: string; content: Buffer }[] = [];
+      let docVars: Record<string, string> = {};
       if (attachDocumentId) {
         const pdf = await renderDocumentPdf(attachDocumentId);
         if (!pdf) {
           return NextResponse.json({ error: 'Attachment document not found' }, { status: 404 });
         }
         attachments.push({ filename: `${pdf.number}.pdf`, content: pdf.buffer });
+        docVars = { docNumber: pdf.number, docType: pdf.typeLabel };
       }
 
+      const rendered = await renderSmart(body, docVars);
+      if ('error' in rendered) {
+        return NextResponse.json({ error: rendered.error }, { status: 404 });
+      }
+
+      // The logo CID inline attachment is added inside sendEmail for every send.
       const log = await sendEmail({
         to,
         subject: rendered.subject,

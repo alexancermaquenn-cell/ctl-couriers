@@ -1,13 +1,23 @@
 import { prisma } from '@/lib/prisma';
+import type { DocumentType } from '@prisma/client';
 import { renderDocument, type DocData } from '@/lib/pdf';
 import { getSetting, getJson } from '@/lib/settings';
 import { CTL_PROFILE, type DocumentDesign, type Seal, type CompanyProfile } from '@/lib/doc-types';
 
 const VALID_DESIGNS: DocumentDesign[] = ['ORIGINAL', 'A', 'B'];
 
+/** Human-readable document title for email copy. */
+const DOC_TYPE_LABEL: Record<DocumentType, string> = {
+  BILL_OF_LADING: 'Bill of Lading',
+  INVOICE: 'Commercial Invoice',
+  INSPECTION: 'Inspection Report',
+};
+
 export interface DocumentPdf {
   number: string;
   buffer: Buffer;
+  type: DocumentType;
+  typeLabel: string;
 }
 
 /**
@@ -55,5 +65,5 @@ export async function renderDocumentPdf(id: string): Promise<DocumentPdf | null>
   } as unknown as DocData;
 
   const buffer = await renderDocument(doc.type, design, dataWithIssuer, seal, doc.currency);
-  return { number: doc.number, buffer };
+  return { number: doc.number, buffer, type: doc.type, typeLabel: DOC_TYPE_LABEL[doc.type] };
 }
