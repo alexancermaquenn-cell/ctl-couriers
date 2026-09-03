@@ -1050,7 +1050,16 @@ function InvoiceOriginal({ profile, data, seal, currency }: { profile: CompanyPr
   const lineItems = data.lineItems ?? [];
   const { subtotal, total } = computeTotals(lineItems, data.taxRate ?? 0);
   const shipmentId = data.shipmentId ?? data.trackingNumber ?? data.docNumber ?? '';
-  const bank = data.bank;
+  // Adapter: if the ORIGINAL-specific `bank` block is missing but the simpler
+  // `bankDetails` (used by A/B designs and the admin form's default section)
+  // is present, map its fields so the ORIGINAL invoice still renders the
+  // bank transfer instructions instead of blank.
+  const bank: InvoiceData['bank'] = data.bank ?? (data.bankDetails ? {
+    bankName: data.bankDetails.bank,
+    iban: data.bankDetails.iban,
+    bicSwift: data.bankDetails.bic,
+    reference: data.bankDetails.ref,
+  } : undefined);
   const sum = data.summary;
   const co = data.countryOfOrigin ?? code;
   const showSeal = data.placeSeal !== false;

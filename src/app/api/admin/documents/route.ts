@@ -115,7 +115,12 @@ export async function POST(req: Request) {
     }
 
     const number = await nextNumber(type);
-    if (data.docNumber == null) data.docNumber = number;
+    // Fill in the docNumber whenever the caller didn't supply one — treat
+    // empty strings as "not supplied", so the invoice always shows a real
+    // number instead of a blank on the PDF.
+    if (data.docNumber == null || (typeof data.docNumber === 'string' && data.docNumber.trim() === '')) {
+      data.docNumber = number;
+    }
 
     const doc = await prisma.document.create({
       data: {

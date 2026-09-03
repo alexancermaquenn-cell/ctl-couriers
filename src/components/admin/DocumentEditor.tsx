@@ -25,6 +25,8 @@ import type {
   ChecklistItem,
   Vehicle,
   BankDetails,
+  OriginalBank,
+  InvoiceSummary,
   InvoiceData,
   BillOfLadingData,
   InspectionData,
@@ -579,6 +581,20 @@ function InvoiceFields({
   const bank: BankDetails = data.bankDetails ?? { bank: '', iban: '', bic: '', ref: '' };
   const setBank = (patch: Partial<BankDetails>) => onChange({ ...data, bankDetails: { ...bank, ...patch } });
 
+  // ORIGINAL-only bank extras (accountName / bankAddress / accountAddress).
+  const bankOrig: OriginalBank = data.bank ?? {};
+  const setBankOrig = (patch: Partial<OriginalBank>) => onChange({ ...data, bank: { ...bankOrig, ...patch } });
+
+  // ORIGINAL-only SUMMARY breakdown.
+  const summary: InvoiceSummary = data.summary ?? {};
+  const setSummary = (patch: Partial<InvoiceSummary>) => onChange({ ...data, summary: { ...summary, ...patch } });
+  const numOrUndef = (s: string): number | undefined => {
+    const t = s.trim();
+    if (t === '') return undefined;
+    const n = Number(t);
+    return Number.isFinite(n) ? n : undefined;
+  };
+
   const vehicle = data.vehicle ?? emptyVehicle();
   // Auto-fill the FIRST line-item description from the vehicle, unless the user typed one.
   const applyVehicle = (v: Vehicle) => {
@@ -738,6 +754,83 @@ function InvoiceFields({
           <label>
             <Label>BIC</Label>
             <Input value={bank.bic} onChange={(e) => setBank({ bic: e.target.value })} />
+          </label>
+        </div>
+      </Section>
+
+      <Section title="Bank — full block (ORIGINAL design only, optional)">
+        <p className="mb-3 text-xs text-fg-subtle">Extra fields that appear on the ORIGINAL invoice&apos;s BANK TRANSFER INSTRUCTIONS panel. Leave blank to skip.</p>
+        <div className="grid grid-cols-2 gap-3">
+          <label>
+            <Label>Account name</Label>
+            <Input value={bankOrig.accountName ?? ''} onChange={(e) => setBankOrig({ accountName: e.target.value })} />
+          </label>
+          <label>
+            <Label>Bank address</Label>
+            <Input value={bankOrig.bankAddress ?? ''} onChange={(e) => setBankOrig({ bankAddress: e.target.value })} />
+          </label>
+          <label className="col-span-2">
+            <Label>Account address</Label>
+            <Input value={bankOrig.accountAddress ?? ''} onChange={(e) => setBankOrig({ accountAddress: e.target.value })} />
+          </label>
+        </div>
+      </Section>
+
+      <Section title="Invoice extras (ORIGINAL design only, optional)">
+        <div className="grid grid-cols-2 gap-3 sm:grid-cols-3">
+          <label>
+            <Label hint="e.g. PO-2026-14">PO number</Label>
+            <Input value={data.poNumber ?? ''} onChange={(e) => set('poNumber', e.target.value)} />
+          </label>
+          <label>
+            <Label hint="e.g. DDP, Net 30">Terms</Label>
+            <Input value={data.terms ?? ''} onChange={(e) => set('terms', e.target.value)} />
+          </label>
+          <label>
+            <Label hint="e.g. Sale">Reason for export</Label>
+            <Input value={data.reasonForExport ?? ''} onChange={(e) => set('reasonForExport', e.target.value)} />
+          </label>
+          <label>
+            <Label hint="default: currency code">Country of origin</Label>
+            <Input value={data.countryOfOrigin ?? ''} onChange={(e) => set('countryOfOrigin', e.target.value)} />
+          </label>
+        </div>
+      </Section>
+
+      <Section title="Summary breakdown (ORIGINAL design only, optional)">
+        <p className="mb-3 text-xs text-fg-subtle">Populate to override the auto-computed SUMMARY panel. Leave blank to use line-item totals.</p>
+        <div className="grid grid-cols-2 gap-3 sm:grid-cols-3">
+          <label>
+            <Label>Prepaid value</Label>
+            <Input type="number" step="0.01" value={summary.prepaidValue ?? ''} onChange={(e) => setSummary({ prepaidValue: numOrUndef(e.target.value) })} />
+          </label>
+          <label>
+            <Label>Sale value</Label>
+            <Input type="number" step="0.01" value={summary.saleValue ?? ''} onChange={(e) => setSummary({ saleValue: numOrUndef(e.target.value) })} />
+          </label>
+          <label>
+            <Label>Shipping &amp; handling</Label>
+            <Input type="number" step="0.01" value={summary.shippingHandling ?? ''} onChange={(e) => setSummary({ shippingHandling: numOrUndef(e.target.value) })} />
+          </label>
+          <label>
+            <Label>Total value</Label>
+            <Input type="number" step="0.01" value={summary.totalValue ?? ''} onChange={(e) => setSummary({ totalValue: numOrUndef(e.target.value) })} />
+          </label>
+          <label>
+            <Label>Deposit value</Label>
+            <Input type="number" step="0.01" value={summary.depositValue ?? ''} onChange={(e) => setSummary({ depositValue: numOrUndef(e.target.value) })} />
+          </label>
+          <label>
+            <Label>Balance</Label>
+            <Input type="number" step="0.01" value={summary.balance ?? ''} onChange={(e) => setSummary({ balance: numOrUndef(e.target.value) })} />
+          </label>
+          <label>
+            <Label>Total to pay</Label>
+            <Input type="number" step="0.01" value={summary.totalToPay ?? ''} onChange={(e) => setSummary({ totalToPay: numOrUndef(e.target.value) })} />
+          </label>
+          <label className="col-span-2">
+            <Label hint="e.g. CTL-INV-2026-0001">Previous invoice</Label>
+            <Input value={summary.previousInvoice ?? ''} onChange={(e) => setSummary({ previousInvoice: e.target.value || undefined })} />
           </label>
         </div>
       </Section>
