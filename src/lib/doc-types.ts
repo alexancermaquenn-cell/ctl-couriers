@@ -54,6 +54,8 @@ export interface InvoiceData {
   poNumber?: string;
   terms?: string; // e.g. "DDP"
   reasonForExport?: string; // e.g. "Sale"
+  /** ORIGINAL invoice TERMS AND CONDITIONS body. Editable per-doc; falls back to DEFAULT_INVOICE_TERMS. */
+  termsAndConditions?: string;
   /** C/O column shows the currency code by default; override per doc if needed. */
   countryOfOrigin?: string;
   /** Full bank block for BANK TRANSFER INSTRUCTIONS (ORIGINAL invoice). */
@@ -214,3 +216,14 @@ export const CTL_PROFILE: CompanyProfile = {
   email: 'info@ctlcouriers.com',
   logo: '/img/docs/logo.png',
 };
+
+/**
+ * Default TERMS AND CONDITIONS body for the ORIGINAL invoice.
+ * Editable per-doc via InvoiceData.termsAndConditions.
+ */
+export const DEFAULT_INVOICE_TERMS =
+  'For international transport and sale orders, CTL COURIERS LTD requires a 50% deposit of the total value, from the intended buyer/receiver, prior to taking any action regarding the transportation, handling and selling of the vehicle in subject. The deposit will be used for customs brokers and transit permits, liability insurance and insurance policy. The deposit will be held by the assigned agent responsible with delivery and selling of vehicle, in a neutral and monitored bank account until the transaction is concluded or cancelled.\n' +
+  '\n' +
+  'Cases:\n' +
+  'A) If the vehicle is ACCEPTED by the buyer, the deposit will be considered as partial payment, and the assigned agent will collect the remaining balance.\n' +
+  'B) If the vehicle is DECLINED by the buyer, the assigned agent will reimburse the buyer with the amount of the deposit, representing the deposit value.';

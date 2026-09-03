@@ -15,6 +15,7 @@ import {
 import type { DocumentType } from '@prisma/client';
 import {
   CTL_PROFILE,
+  DEFAULT_INVOICE_TERMS,
   type CompanyProfile,
   type DocumentData,
   type DocumentDesign,
@@ -1139,15 +1140,13 @@ function InvoiceOriginal({ profile, data, seal, currency }: { profile: CompanyPr
             ))}
           </View>
 
-          {/* terms */}
-          {data.terms || data.notes ? (
-            <>
-              <Text style={oi.secH}>TERMS AND CONDITIONS</Text>
-              <View style={oi.tcBody}>
-                <Text style={oi.tcP}>{data.notes ?? 'For international transport and sale orders, CTL requires a 50% deposit of the total value, from the intended buyer/receiver, prior to taking any action regarding the transportation, handling and selling of the vehicle in subject. The deposit will be held by the assigned agent in a neutral and monitored bank account until the transaction is concluded or cancelled.'}</Text>
-              </View>
-            </>
-          ) : null}
+          {/* Terms & Conditions — always rendered; long default explains
+              the 50%-deposit policy, editable via data.termsAndConditions
+              (falls back to legacy data.notes for older docs). */}
+          <Text style={oi.secH}>TERMS AND CONDITIONS</Text>
+          <View style={oi.tcBody}>
+            <Text style={oi.tcP}>{data.termsAndConditions ?? data.notes ?? DEFAULT_INVOICE_TERMS}</Text>
+          </View>
 
           {/* bank transfer instructions */}
           {bank ? (

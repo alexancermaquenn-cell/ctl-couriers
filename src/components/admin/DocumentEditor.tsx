@@ -33,6 +33,7 @@ import type {
   DocumentData,
   CompanyProfile,
 } from '@/lib/doc-types';
+import { DEFAULT_INVOICE_TERMS } from '@/lib/doc-types';
 
 // ---------- small field wrappers ----------
 function Label({ children, hint }: { children: React.ReactNode; hint?: string }) {
@@ -799,6 +800,38 @@ function InvoiceFields({
 
       <Section title="Summary breakdown (ORIGINAL design only, optional)">
         <p className="mb-3 text-xs text-fg-subtle">Populate to override the auto-computed SUMMARY panel. Leave blank to use line-item totals.</p>
+        <div className="mb-3 flex flex-wrap gap-2">
+          <button
+            type="button"
+            className="rounded border border-fg-subtle/30 px-3 py-1.5 text-xs font-medium hover:bg-bg-subtle"
+            onClick={() => {
+              // Ask for 50% deposit: total from line items, deposit = 50%, balance = the other 50%, total to pay = deposit.
+              const total = totals.total || 0;
+              const deposit = Math.round(total * 50) / 100;
+              const balance = Math.round((total - deposit) * 100) / 100;
+              setSummary({ saleValue: total, totalValue: total, depositValue: deposit, balance, totalToPay: deposit });
+            }}
+          >
+            Request 50% deposit
+          </button>
+          <button
+            type="button"
+            className="rounded border border-fg-subtle/30 px-3 py-1.5 text-xs font-medium hover:bg-bg-subtle"
+            onClick={() => {
+              const total = totals.total || 0;
+              setSummary({ saleValue: total, totalValue: total, depositValue: undefined, balance: undefined, totalToPay: total });
+            }}
+          >
+            Request full payment
+          </button>
+          <button
+            type="button"
+            className="rounded border border-fg-subtle/30 px-3 py-1.5 text-xs font-medium hover:bg-bg-subtle"
+            onClick={() => onChange({ ...data, summary: undefined })}
+          >
+            Clear summary
+          </button>
+        </div>
         <div className="grid grid-cols-2 gap-3 sm:grid-cols-3">
           <label>
             <Label>Prepaid value</Label>
@@ -835,8 +868,36 @@ function InvoiceFields({
         </div>
       </Section>
 
-      <Section title="Notes (optional)">
-        <Textarea value={data.notes ?? ''} onChange={(e) => set('notes', e.target.value)} placeholder="Payment terms, remarks…" />
+      <Section title="Terms & Conditions (ORIGINAL design only)">
+        <div className="mb-2 flex flex-wrap items-center justify-between gap-2">
+          <p className="text-xs text-fg-subtle">Full T&amp;C paragraph shown on the invoice. Leave blank to use the shared default.</p>
+          <div className="flex gap-2">
+            <button
+              type="button"
+              className="rounded border border-fg-subtle/30 px-3 py-1.5 text-xs font-medium hover:bg-bg-subtle"
+              onClick={() => onChange({ ...data, termsAndConditions: DEFAULT_INVOICE_TERMS })}
+            >
+              Load default
+            </button>
+            <button
+              type="button"
+              className="rounded border border-fg-subtle/30 px-3 py-1.5 text-xs font-medium hover:bg-bg-subtle"
+              onClick={() => onChange({ ...data, termsAndConditions: '' })}
+            >
+              Clear
+            </button>
+          </div>
+        </div>
+        <Textarea
+          value={data.termsAndConditions ?? ''}
+          onChange={(e) => onChange({ ...data, termsAndConditions: e.target.value })}
+          placeholder="If left blank the default T&C paragraph is used on the PDF."
+          rows={10}
+        />
+      </Section>
+
+      <Section title="Notes (optional, legacy)">
+        <Textarea value={data.notes ?? ''} onChange={(e) => set('notes', e.target.value)} placeholder="Only used on A/B designs; ORIGINAL now uses the Terms &amp; Conditions section above." />
       </Section>
     </>
   );
