@@ -1098,7 +1098,7 @@ function InvoiceOriginal({ profile, data, seal, currency }: { profile: CompanyPr
             <View style={[oi.hdrColLast, { width: '38%' }]}>
               <Text style={oi.colhead}>INVOICE INFORMATION</Text>
               <View style={oi.barcodeWrap}>
-                <Barcode128 value={shipmentId} width={280} height={58} />
+                <Barcode128 value={shipmentId} width={190} height={44} />
                 <Text style={oi.hrText}>{shipmentId}</Text>
               </View>
               <View style={oi.kv}>
