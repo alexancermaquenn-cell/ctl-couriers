@@ -1097,7 +1097,7 @@ function InvoiceOriginal({ profile, data, seal, currency }: { profile: CompanyPr
             <View style={[oi.hdrColLast, { width: '38%' }]}>
               <Text style={oi.colhead}>INVOICE INFORMATION</Text>
               <View style={oi.barcodeWrap}>
-                <Barcode128 value={shipmentId} width={200} height={40} />
+                <Barcode128 value={shipmentId} width={280} height={58} />
                 <Text style={oi.hrText}>{shipmentId}</Text>
               </View>
               <View style={oi.kv}>
@@ -1190,17 +1190,13 @@ function InvoiceOriginal({ profile, data, seal, currency }: { profile: CompanyPr
           </View>
         </View>
 
-        {/* signatures */}
+        {/* signatures — issuer (us) only. Invoices are not client-signed. */}
         <View style={oi.signs}>
           <View style={oi.signGrid}>
             <View style={oi.signCell}>
               <Text style={oi.signDate}>{data.issueDate}</Text>
               {showSeal && seal.signature ? <Image style={oi.sigImg} src={seal.signature} /> : null}
-              <View style={oi.signLine}><Text>Signature</Text><Text>Date</Text></View>
-            </View>
-            <View style={oi.signCell}>
-              <View style={{ height: 16 }} />
-              <View style={oi.signLine}><Text>Signature</Text><Text>Date</Text></View>
+              <View style={oi.signLine}><Text>Authorised signature</Text><Text>Date</Text></View>
             </View>
           </View>
           {showSeal && seal.stamp ? <Image style={oi.stamp} src={seal.stamp} /> : null}

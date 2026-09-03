@@ -59,8 +59,15 @@ export async function renderDocumentPdf(id: string): Promise<DocumentPdf | null>
   const savedProfile = await getJson<CompanyProfile>('company.profile');
   const issuer: CompanyProfile = { ...CTL_PROFILE, ...(savedProfile ?? {}) };
   const existingIssuer = (data as { issuer?: CompanyProfile }).issuer;
+  // If the caller-supplied dataJson has no docNumber (older invoices saved it
+  // as ""), fall back to the row's own `number` so the PDF never shows blank.
+  const existingDocNumber = (data as { docNumber?: string }).docNumber;
   const dataWithIssuer = {
     ...data,
+    docNumber:
+      typeof existingDocNumber === 'string' && existingDocNumber.trim() !== ''
+        ? existingDocNumber
+        : doc.number,
     issuer: existingIssuer ?? issuer,
   } as unknown as DocData;
 
